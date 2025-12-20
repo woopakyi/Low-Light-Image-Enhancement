@@ -92,15 +92,13 @@ Example Command (in Colab or Jupyter):
 ## Results
 
 - **Baseline Enhancement**: At epoch 20, outputs closely match ground truth with natural colors and details.
-![Input, Ground Truth and Output](img_of_expected_output/img_Cell10.png)
+![Input, Ground Truth and Output](images/img_Cell10.png)
 
 - **Creative Effects**:
   - Spotlight: focus on subject (bright foreground, dark background).
   - Bokeh: Sharp subject with blurred background for artistic depth.
-![Mask preview](img_of_expected_output/img_CellB.png)
-![Spotlight and Bokeh](img_of_expected_output/img_CellCD.png)
-
-Expected output images are in `img_of_expected_output` (Epoch 20 Enhancement):
+![Mask preview](images/img_CellB.png)
+![Spotlight and Bokeh](images/img_CellCD.png)
 
 
 ## Discussion and Limitations

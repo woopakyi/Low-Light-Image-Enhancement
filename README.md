@@ -1,144 +1,115 @@
-# Low-Light-Image-Enhancement
-Deep CNN project for enhancing low-light images with Zero-DCE++ and MobileSAM. Restores visibility/color, enables creative spotlight &amp; bokeh effects, and uses semi-supervised training on the LOL dataset.
+# Low-Light Image Enhancement with Zero-DCE++ and Creative Effects
 
-
-# dataloader.py =============================================
-# Features:
-- Extracts the dataset from the zip file
-- Finds training (485 pairs) and test (15 pairs) folders
-- Applies standard transforms
-- Creates ready-to-use PyTorch DataLoaders
-- Shows sample images
-
-# Requirements:
-pip install torch torchvision torchaudio matplotlib tqdm pillow
-
-
-This project uses the LOL (Low-Light) dataset from Kaggle:
-https://www.kaggle.com/datasets/soumikrakshit/lol-dataset
-
-How to Download and Place the Dataset:
-1. Go to the link above and download the file lol-dataset.zip
-(You may need to sign in to Kaggle.)
-2. Extract the zip file directly into the root folder of this project (the same folder where this README is located)..
-
-After extraction, your folder structure should look exactly like this:
-project-folder/
-├── README.md
-├── your-notebook.ipynb
-├── lol-dataset.zip     ← OR     archive.zip  
-│
-└── ...      
+This repository contains the implementation of a low-light image enhancement model based on a modified Zero-DCE++ architecture, using the LOL (Low-Light) dataset. The project fulfills baseline implementations for image enhancement while introducing two brand-new creative functions: **Spotlight Effect** (聚光灯效果) and **Blurry Background (Bokeh)** (背景虚化). These effects leverage MobileSAM for subject segmentation to provide targeted post-processing beyond global enhancement.
 
 
 
-# model.py =============================================
-# Features:
-- Implements **Zero-DCE++** (Zero-Reference Deep Curve Estimation++) for low-light image enhancement
-- Lightweight architecture using depthwise separable convolutions
-- U-Net-style encoder-decoder with skip connections
-- Predicts spatial-varying curve parameter maps (A) for iterative pixel-wise enhancement
-- Outputs both the final enhanced image and the learned parameter maps
+## Project Overview
+
+Low-light image enhancement aims to improve visibility in poorly lit images by reducing noise, restoring colors, and preserving details. This project uses paired low-light and normal-light images from the LOL dataset (485 training pairs, 15 test pairs at 400x600 resolution).
+
+- **Baseline Model**: A customized Zero-DCE++ model, modified for better performance on the LOL dataset (e.g., U-Net-like architecture with skip connections, hybrid supervised/unsupervised losses including L1 and SSIM).
+- **Why Zero-DCE++?**: Zero-DCE++ model provided a lightweight design with fast training and low resource demands (avoids memory crashes on standard hardware).
+- **Creative Extensions**: 
+  - **Spotlight Effect**: Brightens the main subject dramatically while keeping the background dark, creating a focused illumination effect.
+  - **Blurry Background (Bokeh)**: Applies Gaussian blur to the background, simulating a shallow depth-of-field for a professional portrait-style result.
+- These effects use MobileSAM to detect the central subject automatically, enabling selective enhancements.
 
 
-# Includes all standard Zero-DCE++ loss functions:
-  - Reconstruction loss (L1)
-  - Spatial consistency loss
-  - Exposure control loss
-  - Color constancy loss
-  - Illumination smoothness loss
-  - SSIM loss (custom implementation)
-# Provides utility functions:
-  - `spatial_consistency_loss`
-  - `exposure_control_loss`
-  - `color_constancy_loss`
-  - `illumination_smoothness_loss`
-  - `ssim` (approximate)
-  - `calculate_psnr`
-  - `zero_dce_loss` (combined loss with typical weights)
+## Features
 
-# Requirements:
-pip install torch torchvision
+- **Efficient Training**: Images cropped to 256x256 during training for speed; full resolution used for inference.
+- **Hybrid Loss Functions**: Combines non-reference losses (spatial consistency, exposure, color, smoothness) with supervised L1 and SSIM for better convergence.
+- **Epoch Selection**: Trained for 200 epochs, but epoch 20 is selected for optimal balance (good visuals, no overfitting).
+- **Creative Post-Processing**: 
+  - Spotlight: Foreground x2.8 brightness, background x0.15.
+  - Bokeh: Strong Gaussian blur (71x71 kernel) on background.
+- **Visualization**: Training loss plots, sample outputs, and full test set results.
 
 
-# train.py ========================================
-# Features:
-- Full training pipeline for Zero-DCE++ on the LOL dataset
-- Uses AdamW optimizer with Cosine Annealing Warm Restarts scheduler
-- Applies gradient clipping for stable training
-- Computes and logs training loss every epoch
-- Evaluates on test set every 5 epochs using PSNR and SSIM (via torchmetrics)
+## Requirements
 
+- Python 3.8+
+- PyTorch (with CUDA support recommended for GPU acceleration)
+- Additional libraries: `torchvision`, `numpy`, `matplotlib`, `PIL`, `tqdm`, `glob`, `zipfile`
+- For MobileSAM: Install via `pip install git+https://github.com/ChaoningZhang/MobileSAM.git` (or follow instructions in the notebook).
+- GPU: Tested on NVIDIA Tesla T4 (Google Colab or similar).
 
-# Saves:
-- Final model based on validation PSNR (`zero_dce_pp_final.pth`)
-- Periodic checkpoints every 20 epochs
-- Plots training loss curve at the end
-- Uses combined Zero-DCE++ loss (reconstruction + spatial + exposure + color + illumination + SSIM)
-
-# Requirements:
-pip install torch torchvision torchmetrics tqdm matplotlib numpy
-
-
-
-# test.py ========================================
-# Features:
-- Visualizes Zero-DCE++ enhancement results on the LOL test set
-- Full-resolution inference (400×600) — no cropping
-- Command-line interface for easy use
-- Two modes:
-    - Single image: Full-resolution side-by-side + large enhanced view
-    - All images: Beautiful vertical grid comparing Input → Ground Truth → Enhanced
-
-- For the model loading, you may either:
-  - Uses the provided `zero_dce_pp_trained_default.pth` or;
-  - Uses your own `zero_dce_pp_final.pth` trained via `train.py`
-
-
-
-
-# maskloader.py ========================================
-# Features:
-- Complete pipeline: Low-light enhancement + precise subject segmentation
-- Uses **Zero-DCE++** to brighten and restore color in dark images
-- Uses **MobileSAM** (fast & lightweight) for high-quality automatic segmentation
-- Automatically downloads MobileSAM weights on first run
-- Generates a **clean, tight mask** of the main central subject (e.g., the little doll)
-- Intelligent scoring + merging + cleanup → removes noise, shadows, and unrelated objects
-- Displays clear 3-panel result: Original → Enhanced → Clean Mask
-
-- For the model loading, you may either:
-  - Uses the provided `zero_dce_pp_trained_default.pth` or;
-  - Uses your own `zero_dce_pp_final.pth` trained via `train.py`
-
-# Requirements
-pip install torch torchvision opencv-python matplotlib pillow
+Install dependencies:
+```
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pip install kaggle matplotlib seaborn tqdm torchmetrics
 pip install git+https://github.com/ChaoningZhang/MobileSAM.git
+```
 
 
+## Dataset
 
-# masked_spotlight.py ========================================
-# Features:
-- Creates dramatic spotlight effect on enhanced low-light image
-- Uses clean subject mask to:
-  - Brighten & boost contrast on the main subject (e.g., the little doll)
-  - Darken background for focus and drama
-- Option to use pre-generated mask (via `--mask-path`) or auto-generate one (requires `maskloader.py`)
-- Full-resolution processing (400×600) for high-quality results
+This project uses the [LOL Dataset](https://www.kaggle.com/datasets/soumikrakshit/lol-dataset) from Kaggle.
 
-# Requirements
-pip install torch torchvision opencv-python matplotlib pillow numpy
+1. Download `lol-dataset.zip` (or `archive.zip`) from Kaggle.
+2. Place the ZIP file in the project root directory.
+3. The notebook will automatically extract it to `lol_dataset/` (containing `our485/` for training and `eval15/` for testing).
+
+If already extracted, ensure the structure matches:
+- `lol_dataset/our485/low/` (485 low-light images)
+- `lol_dataset/our485/high/` (485 normal-light images)
+- `lol_dataset/eval15/low/` (15 low-light test images)
+- `lol_dataset/eval15/high/` (15 normal-light test images)
 
 
+## Usage
 
-# masked_spotlight.py ========================================
-# Features:
-- Creates dramatic spotlight effect on enhanced low-light image
-- Uses clean subject mask to:
-  - Brighten & boost contrast on the main subject (e.g., the little doll)
-  - Darken background for focus and drama
-- Option to use pre-generated mask (via `--mask-path`) or auto-generate one (requires `maskloader.py`)
-- Full-resolution processing (400×600) for high-quality results
+1. **Clone the Repository**:
+   ```
+   git clone https://github.com/woopakyi/Low-Light-Image-Enhancement.git
+   cd Low-Light-Image-Enhancement
+   ```
 
-# Requirements
-pip install torch torchvision opencv-python matplotlib pillow numpy
+2. **Prepare Dataset**: Download and place the ZIP as described above.
+
+3. **Run the Notebook**:
+   - Open `notebook.ipynb` in Jupyter Notebook or Google Colab.
+   - Execute cells sequentially:
+     - Install libraries and setup.
+     - Handle dataset extraction.
+     - Define dataset class and model.
+     - Train the model.
+     - Run inference on test set.
+     - Apply creative effects (Spotlight and Bokeh).
+
+   Key Sections in Notebook:
+   - **Cell 1-5**: Libraries, setup, and dataset handling.
+   - **Cell 6-8**: model definition and loss functions.
+   - **Cell 9**: model training and Validation Loss Curves.
+   - **Cell 10**: Inference and visualization.
+   - **Cell A-D**: MobileSAM setup and creative effects (Spotlight, Bokeh).
+
+Example Command (in Colab or Jupyter):
+- Run all cells for full training and testing (takes ~10-20 minutes on GPU for 20 epochs).
+
+
+## Results
+
+- **Baseline Enhancement**: At epoch 20, outputs closely match ground truth with natural colors and details.
+- **Training Loss**: Steady decrease, with epoch 20 avoiding overfitting.
+- **Creative Effects**:
+  - Spotlight: focus on subject (bright foreground, dark background).
+  - Bokeh: Sharp subject with blurred background for artistic depth.
+
+Expected output images are in `img_of_expected_output` (Epoch 20 Enhancement):
+
+
+## Discussion and Limitations
+
+- **Benefits**: Fast, resource-efficient model with high-quality enhancements. Creative effects add unique value.
+- **Limitations**: Occasional over-brightening in complex scenes; MobileSAM may struggle in very dark areas.
+- **Future Work**: Add attention modules, fine-tune on low-light data, or enable interactive controls.
+
+
+## Acknowledgments
+
+- Zero-DCE++: [GitHub](https://github.com/Li-Chongyi/Zero-DCE_extension)
+- MobileSAM: [GitHub](https://github.com/ChaoningZhang/MobileSAM)
+- LOL Dataset: [Kaggle](https://www.kaggle.com/datasets/soumikrakshit/lol-dataset)
+

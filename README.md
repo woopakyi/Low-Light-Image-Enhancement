@@ -92,7 +92,8 @@ Example Command (in Colab or Jupyter):
 ## Results
 
 - **Baseline Enhancement**: At epoch 20, outputs closely match ground truth with natural colors and details.
-![Input, Ground Truth and Output](images/img_Cell10.png)
+![Input and Ground Truth](images/img_Cell10_1_1.png)
+![Output](images/img_Cell10_1_2.png)
 
 - **Creative Effects**:
   - Spotlight: focus on subject (bright foreground, dark background).

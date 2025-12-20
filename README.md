@@ -1,6 +1,6 @@
 # Low-Light Image Enhancement with Zero-DCE++ and Creative Effects
 
-This repository contains the implementation of a low-light image enhancement model based on a modified Zero-DCE++ architecture, using the LOL (Low-Light) dataset. The project fulfills baseline implementations for image enhancement while introducing two brand-new creative functions: **Spotlight Effect** (聚光灯效果) and **Blurry Background (Bokeh)** (背景虚化). These effects leverage MobileSAM for subject segmentation to provide targeted post-processing beyond global enhancement.
+This repository contains the implementation of a low-light image enhancement model based on a modified Zero-DCE++ architecture, using the LOL (Low-Light) dataset. The project fulfills baseline implementations for image enhancement while introducing two creative functions: **Spotlight Effect** (聚光灯效果) and **Blurry Background** (背景虚化). These effects leverage MobileSAM for subject segmentation to provide targeted post-processing beyond global enhancement.
 
 
 
@@ -9,9 +9,9 @@ This repository contains the implementation of a low-light image enhancement mod
 Low-light image enhancement aims to improve visibility in poorly lit images by reducing noise, restoring colors, and preserving details. This project uses paired low-light and normal-light images from the LOL dataset (485 training pairs, 15 test pairs at 400x600 resolution).
 
 - **Baseline Model**: A customized Zero-DCE++ model, modified for better performance on the LOL dataset (e.g., U-Net-like architecture with skip connections, hybrid supervised/unsupervised losses including L1 and SSIM).
-- **Why Zero-DCE++?**: Zero-DCE++ model provided a lightweight design with fast training and low resource demands (avoids memory crashes on standard hardware).
+- **Why Zero-DCE++?**: Zero-DCE++ model provided a lightweight design with fast training and low resource demands.
 - **Creative Extensions**: 
-  - **Spotlight Effect**: Brightens the main subject dramatically while keeping the background dark, creating a focused illumination effect.
+  - **Spotlight Effect**: Brightens the main subject while keeping the background dark, creating a focused illumination effect.
   - **Blurry Background (Bokeh)**: Applies Gaussian blur to the background, simulating a shallow depth-of-field for a professional portrait-style result.
 - These effects use MobileSAM to detect the central subject automatically, enabling selective enhancements.
 
@@ -20,7 +20,7 @@ Low-light image enhancement aims to improve visibility in poorly lit images by r
 
 - **Efficient Training**: Images cropped to 256x256 during training for speed; full resolution used for inference.
 - **Hybrid Loss Functions**: Combines non-reference losses (spatial consistency, exposure, color, smoothness) with supervised L1 and SSIM for better convergence.
-- **Epoch Selection**: Trained for 200 epochs, but epoch 20 is selected for optimal balance (good visuals, no overfitting).
+- **Epoch Selection**: Trained for 200 epochs, but epoch 20 is selected for optimal balance (good visuals, less training time, no overfitting).
 - **Creative Post-Processing**: 
   - Spotlight: Foreground x2.8 brightness, background x0.15.
   - Bokeh: Strong Gaussian blur (71x71 kernel) on background.
@@ -92,10 +92,13 @@ Example Command (in Colab or Jupyter):
 ## Results
 
 - **Baseline Enhancement**: At epoch 20, outputs closely match ground truth with natural colors and details.
-- **Training Loss**: Steady decrease, with epoch 20 avoiding overfitting.
+![Input, Ground Truth and Output](./img_of_expected_output/img_Cell10.png)
+
 - **Creative Effects**:
   - Spotlight: focus on subject (bright foreground, dark background).
   - Bokeh: Sharp subject with blurred background for artistic depth.
+![Mask preview](./img_of_expected_output/img_CellB.png)
+![Spotlight and Bokeh](./img_of_expected_output/img_CellCD.png)
 
 Expected output images are in `img_of_expected_output` (Epoch 20 Enhancement):
 

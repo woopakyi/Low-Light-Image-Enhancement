@@ -32,7 +32,6 @@ Low-light image enhancement aims to improve visibility in poorly lit images by r
 - Python 3.8+
 - PyTorch (with CUDA support recommended for GPU acceleration)
 - Additional libraries: `torchvision`, `numpy`, `matplotlib`, `PIL`, `tqdm`, `glob`, `zipfile`
-- For MobileSAM: Install via `pip install git+https://github.com/ChaoningZhang/MobileSAM.git` (or follow instructions in the notebook).
 - GPU: Tested on NVIDIA Tesla T4 (Google Colab or similar).
 
 Install dependencies:
@@ -43,21 +42,6 @@ pip install git+https://github.com/ChaoningZhang/MobileSAM.git
 ```
 
 
-## Dataset
-
-This project uses the [LOL Dataset](https://www.kaggle.com/datasets/soumikrakshit/lol-dataset) from Kaggle.
-
-1. Download `lol-dataset.zip` (or `archive.zip`) from Kaggle.
-2. Place the ZIP file in the project root directory.
-3. The notebook will automatically extract it to `lol_dataset/` (containing `our485/` for training and `eval15/` for testing).
-
-After extraction, ensure the structure matches:
-- `lol_dataset/our485/low/` (485 low-light images)
-- `lol_dataset/our485/high/` (485 normal-light images)
-- `lol_dataset/eval15/low/` (15 low-light test images)
-- `lol_dataset/eval15/high/` (15 normal-light test images)
-
-
 ## Usage
 
 1. Clone the Repository in VS Code:
@@ -65,31 +49,22 @@ After extraction, ensure the structure matches:
    git clone https://github.com/woopakyi/Low-Light-Image-Enhancement.git
    cd Low-Light-Image-Enhancement
    ```
-   Or open the notebook in Google Colab:
+   Or open the notebook in Google Colab: 
    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/woopakyi/Low-Light-Image-Enhancement/blob/main/notebook.ipynb)
 
 
-2. **Prepare Dataset**: Download and place the ZIP as described above.
+2. **Prepare Dataset**:
+   - Download `archive.zip` (or `lol-dataset.zip`) from [Kaggle](https://www.kaggle.com/datasets/soumikrakshit/lol-dataset).
+   - Place the ZIP file in the project root directory.
+   - The notebook will automatically extract it to `lol_dataset/` (containing `our485/` for training and `eval15/` for testing).
 
 3. **Run the Notebook**:
-   - Open `notebook.ipynb` in Jupyter Notebook or Google Colab.
-   - Execute cells sequentially:
-     - Install libraries and setup.
-     - Handle dataset extraction.
-     - Define dataset class and model.
-     - Train the model.
-     - Run inference on test set.
-     - Apply creative effects (Spotlight and Bokeh).
-
-   Key Sections in Notebook:
-   - **Cell 1-5**: Libraries, setup, and dataset handling.
-   - **Cell 6-8**: model definition and loss functions.
-   - **Cell 9**: model training and Validation Loss Curves.
-   - **Cell 10**: Inference and visualization.
-   - **Cell A-D**: MobileSAM setup and creative effects (Spotlight, Bokeh).
-
-Example Command (in Colab or Jupyter):
-- Run all cells for full training and testing (takes ~10-20 minutes on GPU for 20 epochs).
+   - Execute cells in the `notebook.ipynb` sequentially:
+     - **Cell 1-5**: Libraries, setup, and dataset handling.
+     - **Cell 6-8**: model definition and loss functions.
+     - **Cell 9**: model training and Validation Loss Curves.
+     - **Cell 10**: Inference and visualization.
+     - **Cell A-D**: MobileSAM setup and creative effects (Spotlight, Bokeh).
 
 
 ## Results

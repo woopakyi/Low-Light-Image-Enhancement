@@ -51,7 +51,7 @@ This project uses the [LOL Dataset](https://www.kaggle.com/datasets/soumikrakshi
 2. Place the ZIP file in the project root directory.
 3. The notebook will automatically extract it to `lol_dataset/` (containing `our485/` for training and `eval15/` for testing).
 
-If already extracted, ensure the structure matches:
+After extraction, ensure the structure matches:
 - `lol_dataset/our485/low/` (485 low-light images)
 - `lol_dataset/our485/high/` (485 normal-light images)
 - `lol_dataset/eval15/low/` (15 low-light test images)
@@ -60,11 +60,14 @@ If already extracted, ensure the structure matches:
 
 ## Usage
 
-1. **Clone the Repository**:
+1. Clone the Repository in VS Code:
    ```
    git clone https://github.com/woopakyi/Low-Light-Image-Enhancement.git
    cd Low-Light-Image-Enhancement
    ```
+   Or open the notebook in Google Colab:
+   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/woopakyi/Low-Light-Image-Enhancement/blob/main/notebook.ipynb)
+
 
 2. **Prepare Dataset**: Download and place the ZIP as described above.
 

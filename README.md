@@ -6,10 +6,9 @@ This repository contains the implementation of a low-light image enhancement mod
 
 ## Project Overview
 
-Low-light image enhancement aims to improve visibility in poorly lit images by reducing noise, restoring colors, and preserving details. This project uses paired low-light and normal-light images from the LOL dataset (485 training pairs, 15 test pairs at 400x600 resolution).
+- **Dataset**: Low-light and normal-light images from [Kaggle](https://www.kaggle.com/datasets/soumikrakshit/lol-dataset) (485 training pairs, 15 test pairs at 400x600 resolution).
 
 - **Baseline Model**: A customized Zero-DCE++ model, modified for better performance on the LOL dataset (e.g., U-Net-like architecture with skip connections, hybrid supervised/unsupervised losses including L1 and SSIM).
-- **Why Zero-DCE++?**: Zero-DCE++ model provided a lightweight design with fast training and low resource demands.
 - **Creative Extensions**: 
   - **Spotlight Effect**: Brightens the main subject while keeping the background dark, creating a focused illumination effect.
   - **Blurry Background (Bokeh)**: Applies Gaussian blur to the background, simulating a shallow depth-of-field for a professional portrait-style result.
@@ -19,12 +18,30 @@ Low-light image enhancement aims to improve visibility in poorly lit images by r
 ## Features
 
 - **Efficient Training**: Images cropped to 256x256 during training for speed; full resolution used for inference.
+![Image cropping](images/img_Cell5_2.png)
 - **Hybrid Loss Functions**: Combines non-reference losses (spatial consistency, exposure, color, smoothness) with supervised L1 and SSIM for better convergence.
 - **Epoch Selection**: Trained for 200 epochs, but epoch 20 is selected for optimal balance (good visuals, less training time, no overfitting).
+![Training_loss](images/training_loss.png)
 - **Creative Post-Processing**: 
-  - Spotlight: Foreground x2.8 brightness, background x0.15.
-  - Bokeh: Strong Gaussian blur (71x71 kernel) on background.
+Spotlight: Foreground x2.8 brightness, background x0.15.
+Bokeh: Strong Gaussian blur (71x71 kernel) on background.
 - **Visualization**: Training loss plots, sample outputs, and full test set results.
+
+
+## Results
+
+- **Baseline Enhancement**: 
+  - At epoch 20, outputs closely match ground truth with natural colors and details.
+![Total Input, Ground Truth and Output](images/img_Cell10_2.png)
+---
+![Input, Ground Truth and Output](images/img_Cell10.png)
+
+- **Creative Effects**:
+  - Spotlight: focus on subject (bright foreground, dark background).
+  - Bokeh: Sharp subject with blurred background for artistic depth.
+![Mask preview](images/img_CellB.png)
+![Spotlight and Bokeh](images/img_CellCD.png)
+
 
 
 ## Requirements
@@ -65,19 +82,6 @@ pip install git+https://github.com/ChaoningZhang/MobileSAM.git
      - **Cell 9**: model training and Validation Loss Curves.
      - **Cell 10**: Inference and visualization.
      - **Cell A-D**: MobileSAM setup and creative effects (Spotlight, Bokeh).
-
-
-## Results
-
-- **Baseline Enhancement**: 
-  - At epoch 20, outputs closely match ground truth with natural colors and details.
-![Input, Ground Truth and Output](images/img_Cell10.png)
-
-- **Creative Effects**:
-  - Spotlight: focus on subject (bright foreground, dark background).
-  - Bokeh: Sharp subject with blurred background for artistic depth.
-![Mask preview](images/img_CellB.png)
-![Spotlight and Bokeh](images/img_CellCD.png)
 
 
 ## Discussion and Limitations

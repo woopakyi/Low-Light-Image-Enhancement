@@ -1,6 +1,6 @@
 # Low-Light Image Enhancement with Zero-DCE++ and Creative Effects
 
-This repository contains the implementation of a low-light image enhancement model based on a modified Zero-DCE++ architecture, using the LOL (Low-Light) dataset. The project fulfills baseline implementations for image enhancement while introducing two creative functions: **Spotlight Effect** (聚光灯效果) and **Blurry Background** (背景虚化). These effects leverage MobileSAM for subject segmentation to provide targeted post-processing beyond global enhancement.
+This repository contains the implementation of a low-light image enhancement model based on a modified Zero-DCE++ architecture, using the LOL (Low-Light) dataset. The project fulfills baseline implementations for image enhancement while introducing two creative functions: **Spotlight Effect** and **Blurry Background**. These effects leverage MobileSAM for subject segmentation to provide targeted post-processing beyond global enhancement.
 
 
 
@@ -33,7 +33,6 @@ Bokeh: Strong Gaussian blur (71x71 kernel) on background.
 - **Baseline Enhancement**: 
   - At epoch 20, outputs closely match ground truth with natural colors and details.
 ![Total Input, Ground Truth and Output](images/img_Cell10_2.png)
----
 ![Input, Ground Truth and Output](images/img_Cell10.png)
 
 - **Creative Effects**:
